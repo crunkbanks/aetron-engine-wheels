@@ -34,13 +34,17 @@ refuses to start on a library it does not recognise.
 One backend needs more than one artifact where a single toolchain cannot cover the hardware:
 `nvcc` 12.4 cannot target `compute_120`, so Ampere/Ada and Blackwell are separate wheels.
 
-| backend | target | toolkit |
-|---|---|---|
-| metal | apple-arm64 | Xcode (no Metal toolchain component required) |
-| cuda | sm86_89 | CUDA 12.4+ |
-| cuda | sm120 | CUDA 12.8+ |
-| hip | gfx942 | ROCm |
-| cpu | x86_64 | — |
+| backend | target | toolkit | asset name |
+|---|---|---|---|
+| metal | apple-arm64 | Xcode (no Metal toolchain component required) | `…-py3-none-macosx_26_0_arm64.whl` |
+| cuda | sm86_89 | CUDA 12.4+ | `…-py3-none-linux_x86_64.whl` |
+| cuda | sm120 | CUDA 12.8+ | `…-120-py3-none-linux_x86_64.whl` |
+| hip | gfx942 | ROCm 6.4 (built with 6.4.3; ggml needs a 6.x runtime) | `…-0gfx942-py3-none-linux_x86_64.whl` |
+| cpu | x86_64 | — (GGML_RPC on, no accelerator kernels) | `…-0cpu-py3-none-linux_x86_64.whl` |
+
+Linux wheels for different hardware share the platform tag, so they are told apart by a PEP 427
+build tag (`120`, `0gfx942`, `0cpu`) instead of by name: installing the plain-named linux wheel on
+an AMD or CPU-only machine would silently give it the sm_86/89 CUDA kernels.
 
 ## Licence
 
